@@ -35,10 +35,7 @@ def count():
 ######################################################################
 @app.route("/picture", methods=["GET"])
 def get_pictures():
-    pictures = []
-    for picture in data:
-        pictures.append(picture["pic_url"])
-    return pictures,200
+    return data
 
 
 ######################################################################
@@ -74,11 +71,10 @@ def create_picture():
 @app.route("/picture/<int:id>", methods=["PUT"])
 def update_picture(id):
     new_picture = request.json
-    for picture in data:
-        if new_picture["id"] == picture["id"]:
-            data.remove(picture)
-            data.append(new_picture)
-            return new_picture,200
+    for index,picture in enumerate(data):
+        if id == picture["id"]:
+            data[index] = new_picture
+            return new_picture,201
     return {"message":"picture not found"}, 404
 
 ######################################################################
