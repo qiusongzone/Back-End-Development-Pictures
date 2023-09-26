@@ -35,7 +35,11 @@ def count():
 ######################################################################
 @app.route("/picture", methods=["GET"])
 def get_pictures():
-    pass
+    pictures = []
+    for picture in data:
+        pictures.append(picture["pic_url"])
+    return pictures,200
+
 
 ######################################################################
 # GET A PICTURE
@@ -44,7 +48,10 @@ def get_pictures():
 
 @app.route("/picture/<int:id>", methods=["GET"])
 def get_picture_by_id(id):
-    pass
+    for picture in data:
+        if id == picture["id"]:
+            return picture,200
+    return {"message":"picture not found"},404
 
 
 ######################################################################
@@ -52,7 +59,12 @@ def get_picture_by_id(id):
 ######################################################################
 @app.route("/picture", methods=["POST"])
 def create_picture():
-    pass
+    new_picture = request.json
+    for picture in data:
+        if new_picture["id"] == picture["id"]:
+            return {"Message":f"picture with id {picture['id']} already present"},302
+    data.append(new_picture)
+    return new_picture,201
 
 ######################################################################
 # UPDATE A PICTURE
@@ -61,11 +73,21 @@ def create_picture():
 
 @app.route("/picture/<int:id>", methods=["PUT"])
 def update_picture(id):
-    pass
+    new_picture = request.json
+    for picture in data:
+        if new_picture["id"] == picture["id"]:
+            data.remove(picture)
+            data.append(new_picture)
+            return new_picture,200
+    return {"message":"picture not found"}, 404
 
 ######################################################################
 # DELETE A PICTURE
 ######################################################################
 @app.route("/picture/<int:id>", methods=["DELETE"])
 def delete_picture(id):
-    pass
+    for picture in data:
+        if id == picture["id"]:
+            data.remove(picture)
+            return make_response("", 204)
+    return make_response({"message":"picture not found"}, 404)
